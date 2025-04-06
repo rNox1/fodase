@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ficha de Personagem - Omnipotentia</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@5/dark.min.css">
+  <style>
+    /* Estilos Gerais */
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #1e1e1e;
+      color: #f1f1f1;
+      margin: 0;
+      padding: 2rem;
+    }
+    .ficha-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background-color: #2c2c2c;
+      border-radius: 12px;
+      padding: 2rem;
+      box-shadow: 0 0 10px rgba(255, 136, 0, 0.3);
+    }
+    .campo, .campo-inline {
+      margin-bottom: 1rem;
+    }
+    label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 0.25rem;
+    }
+    input[type="text"], input[type="number"], textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border-radius: 6px;
+      border: none;
+      background-color: #3c3c3c;
+      color: #fff;
+    }
+    textarea {
+      resize: vertical;
+    }
+    .grid-2, .grid-3, .grid-4 {
+      display: grid;
+      gap: 1rem;
+    }
+    .grid-2 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+    .grid-3 {
+      grid-template-columns: repeat(3, 1fr);
+    }
+    .grid-4 {
+      grid-template-columns: repeat(4, 1fr);
+    }
+    h2 {
+      border-bottom: 1px solid #444;
+      padding-bottom: 0.5rem;
+      margin-bottom: 1rem;
+      color: #ffa500;
+    }
+    /* Logo */
+    .logo-container {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+    .logo-container img {
+      max-width: 200px;
+      height: auto;
+    }
+    /* Seção de Informações Básicas com Foto integrada */
+    .info-basicas {
+      display: flex;
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+      align-items: center;
+    }
+    .foto-container {
+      flex: 0 0 150px;
+      text-align: center;
+    }
+    .foto-container img {
+      max-width: 150px;
+      border-radius: 10px;
+      display: none;
+    }
+    .foto-container button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6600;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+    }
+    .info-basicas .dados {
+      flex: 1;
+    }
+    /* Status com valores acima das barras */
+    .status-group {
+      margin-bottom: 2rem;
+    }
+    .status-input-group {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+    .status-input-group span {
+      font-weight: bold;
+    }
+    /* Botões de incremento para status */
+    .input-group {
+      display: flex;
+      align-items: center;
+    }
+    .input-small {
+      width: 3rem;
+      padding: 0.3rem;
+      text-align: center;
+      border: none;
+      background-color: #3c3c3c;
+      color: #fff;
+      border-radius: 4px;
+    }
+    .btn-incr, .btn-decr {
+      background-color: #ff6600;
+      border: none;
+      color: #fff;
+      padding: 0.3rem 0.5rem;
+      cursor: pointer;
+      margin-left: 0.3rem;
+      border-radius: 4px;
+    }
+    .btn-incr:hover, .btn-decr:hover {
+      background-color: #ff8c00;
+    }
+    /* Barras de Status */
+    .barras {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .barra {
+      height: 25px;
+      border-radius: 8px;
+      overflow: hidden;
+      background-color: #444;
+    }
+    .barra-preenchida {
+      height: 100%;
+      transition: width 0.5s ease-in-out;
+    }
+    .pv { background-color: #e53935; }
+    .pe { background-color: #f9a825; }
+    .sa { background-color: #7e57c2; }
+    /* Seções */
+    .section {
+      margin-bottom: 2rem;
+    }
+    /* Inventário */
+    .inventario-container {
+      border: 1px solid #444;
+      padding: 1rem;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .inventario-lista {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .inventario-item {
+      padding: 0.5rem;
+      border-bottom: 1px solid #555;
+      cursor: pointer;
+      position: relative;
+    }
+    .inventario-item:last-child {
+      border-bottom: none;
+    }
+    .transfer-btn {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #ff6600;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+    }
+    .remover-btn {
+      position: absolute;
+      right: 50px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: #e53935;
+      border: none;
+      border-radius: 4px;
+      padding: 2px 6px;
+      cursor: pointer;
+      color: #fff;
+      font-weight: bold;
+    }
+    .inventario-capacidade {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      align-items: center;
+    }
+    .inventario-capacidade label {
+      margin: 0;
+      font-weight: normal;
+    }
+    .carga-atual-box {
+      display: inline-block;
+      min-width: 50px;
+      padding: 0.3rem;
+      background-color: #3c3c3c;
+      border-radius: 6px;
+      text-align: center;
+    }
+    /* Botões */
+    .buttons, .btn-adicionar {
+      margin-top: 2rem;
+      display: flex;
+      gap: 1rem;
+    }
+    .buttons button, .btn-adicionar button {
+      flex: 1;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 8px;
+      background-color: #ff6600;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    /* Modal Inline */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: #2c2c2c;
+      padding: 1.5rem;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 400px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.7);
+    }
+    .modal h3 {
+      margin-top: 0;
+      color: #ffa500;
+    }
+    .modal .campo {
+      margin-bottom: 1rem;
+    }
+    .modal-buttons {
+      text-align: right;
+    }
+    .modal-buttons button {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      margin-left: 0.5rem;
+      cursor: pointer;
+    }
+    .modal-buttons .btn-confirmar { background-color: #ff6600; color: #1e1e1e; }
+    .modal-buttons .btn-cancelar { background-color: #777; color: #fff; }
+  </style>
+</head>
+<body>
+  <!-- Espaço para a Logo -->
+  <div class="logo-container">
+    <!-- Substitua 'logo.png' pela sua logo -->
+    <img id="logo" src="logo.png" alt="Logo" />
+  </div>
+
+  <div class="ficha-container">
+    <!-- Informações Básicas com Foto integrada -->
+    <div class="section info-basicas">
+      <div class="foto-container">
+        <!-- Botão para adicionar/trocar foto -->
+        <button onclick="document.getElementById('foto-input').click()">Foto</button>
+        <input type="file" id="foto-input" accept="image/*" style="display:none" onchange="previewFoto(event)" />
+        <img id="foto-personagem" src="" alt="Foto do Personagem"/>
+      </div>
+      <div class="dados">
+        <h2>Informações Básicas</h2>
+        <div class="campo">
+          <label for="nome">Nome</label>
+          <input type="text" id="nome">
+        </div>
+        <div class="campo">
+          <label for="origem">Origem</label>
+          <input type="text" id="origem">
+        </div>
+        <div class="campo">
+          <label for="classe">Classe</label>
+          <input type="text" id="classe">
+        </div>
+        <div class="grid-2">
+          <div class="campo-inline">
+            <label for="nivel">Nível</label>
+            <div class="input-group">
+              <input type="number" id="nivel" class="input-small" min="0">
+              <button class="btn-decr" onclick="decrement('nivel')">-</button>
+              <button class="btn-incr" onclick="increment('nivel')">+</button>
+            </div>
+          </div>
+          <div class="campo-inline">
+            <label for="pc">PC</label>
+            <div class="input-group">
+              <input type="number" id="pc" class="input-small" min="0">
+              <button class="btn-decr" onclick="decrement('pc')">-</button>
+              <button class="btn-incr" onclick="increment('pc')">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Status com valores acima das barras -->
+    <div class="section">
+      <h2>Status</h2>
+      <div class="status-group">
+        <!-- PV -->
+        <div class="status-input-group">
+          <span>PV:</span>
+          <div class="input-group">
+            <input type="number" id="pv-atual" class="input-small" min="0">
+            <button class="btn-decr" onclick="decrement('pv-atual')">-</button>
+            <button class="btn-incr" onclick="increment('pv-atual')">+</button>
+          </div>
+          <span>/</span>
+          <div class="input-group">
+            <input type="number" id="pv-max" class="input-small" min="0">
+            <button class="btn-decr" onclick="decrement('pv-max')">-</button>
+            <button class="btn-incr" onclick="increment('pv-max')">+</button>
+          </div>
+        </div>
+        <div class="barra">
+          <div class="barra-preenchida pv" id="barra-pv" style="width: 0%" data-valor="0/0"></div>
+        </div>
+      </div>
+      <!-- PE -->
+      <div class="status-group">
+        <div class="status-input-group">
+          <span>PE:</span>
+          <div class="input-group">
+            <input type="number" id="pe-atual" class="input-small" min="0">
+            <button class="btn-decr" onclick="decrement('pe-atual')">-</button>
+            <button class="btn-incr" onclick="increment('pe-atual')">+</button>
+          </div>
+          <span>/</span>
+          <div class="input-group">
+            <input type="number" id="pe-max" class="input-small" min="0">
+            <button class="btn-decr" onclick="decrement('pe-max')">-</button>
+            <button class="btn-incr" onclick="increment('pe-max')">+</button>
+          </div>
+        </div>
+        <div class="barra">
+          <div class="barra-preenchida pe" id="barra-pe" style="width: 0%" data-valor="0/0"></div>
+        </div>
+      </div>
+      <!-- SA -->
+      <div class="status-group">
+        <div class="status-input-group">
+          <span>SA:</span>
+          <div class="input-group">
+            <input type="number" id="sa-atual" class="input-small" min="0">
+            <button class="btn-decr" onclick="decrement('sa-atual')">-</button>
+            <button class="btn-incr" onclick="increment('sa-atual')">+</button>
+          </div>
+          <span>/</span>
+          <div class="input-group">
+            <input type="number" id="sa-max" class="input-small" min="0">
+            <button class="btn-decr" onclick="decrement('sa-max')">-</button>
+            <button class="btn-incr" onclick="increment('sa-max')">+</button>
+          </div>
+        </div>
+        <div class="barra">
+          <div class="barra-preenchida sa" id="barra-sa" style="width: 0%" data-valor="0/0"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Atributos Principais -->
+    <div class="section">
+      <h2>Atributos Principais</h2>
+      <div class="grid-3">
+        <div class="campo">
+          <label>Força</label>
+          <div class="input-group">
+            <input type="number" id="forca" class="input-small">
+            <button class="btn-decr" onclick="decrement('forca')">-</button>
+            <button class="btn-incr" onclick="increment('forca')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Destreza</label>
+          <div class="input-group">
+            <input type="number" id="destreza" class="input-small">
+            <button class="btn-decr" onclick="decrement('destreza')">-</button>
+            <button class="btn-incr" onclick="increment('destreza')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Constituição</label>
+          <div class="input-group">
+            <input type="number" id="constituicao" class="input-small">
+            <button class="btn-decr" onclick="decrement('constituicao')">-</button>
+            <button class="btn-incr" onclick="increment('constituicao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Inteligência</label>
+          <div class="input-group">
+            <input type="number" id="inteligencia" class="input-small">
+            <button class="btn-decr" onclick="decrement('inteligencia')">-</button>
+            <button class="btn-incr" onclick="increment('inteligencia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Sabedoria</label>
+          <div class="input-group">
+            <input type="number" id="sabedoria" class="input-small">
+            <button class="btn-decr" onclick="decrement('sabedoria')">-</button>
+            <button class="btn-incr" onclick="increment('sabedoria')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Carisma</label>
+          <div class="input-group">
+            <input type="number" id="carisma" class="input-small">
+            <button class="btn-decr" onclick="decrement('carisma')">-</button>
+            <button class="btn-incr" onclick="increment('carisma')">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Perícias -->
+    <div class="section">
+      <h2>Perícias</h2>
+      <div class="grid-4">
+        <div class="campo">
+          <label>Acrobacia</label>
+          <div class="input-group">
+            <input type="number" id="acrobacia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('acrobacia')">-</button>
+            <button class="btn-incr" onclick="increment('acrobacia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Adestramento</label>
+          <div class="input-group">
+            <input type="number" id="adestramento" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('adestramento')">-</button>
+            <button class="btn-incr" onclick="increment('adestramento')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Atletismo</label>
+          <div class="input-group">
+            <input type="number" id="atletismo" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('atletismo')">-</button>
+            <button class="btn-incr" onclick="increment('atletismo')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Atualidades</label>
+          <div class="input-group">
+            <input type="number" id="atualidades" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('atualidades')">-</button>
+            <button class="btn-incr" onclick="increment('atualidades')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Ciências</label>
+          <div class="input-group">
+            <input type="number" id="ciencias" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('ciencias')">-</button>
+            <button class="btn-incr" onclick="increment('ciencias')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Crime</label>
+          <div class="input-group">
+            <input type="number" id="crime" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('crime')">-</button>
+            <button class="btn-incr" onclick="increment('crime')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Diplomacia</label>
+          <div class="input-group">
+            <input type="number" id="diplomacia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('diplomacia')">-</button>
+            <button class="btn-incr" onclick="increment('diplomacia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Enganação</label>
+          <div class="input-group">
+            <input type="number" id="enganacao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('enganacao')">-</button>
+            <button class="btn-incr" onclick="increment('enganacao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Fortitude</label>
+          <div class="input-group">
+            <input type="number" id="fortitude" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('fortitude')">-</button>
+            <button class="btn-incr" onclick="increment('fortitude')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Furtividade</label>
+          <div class="input-group">
+            <input type="number" id="furtividade" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('furtividade')">-</button>
+            <button class="btn-incr" onclick="increment('furtividade')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Iniciativa</label>
+          <div class="input-group">
+            <input type="number" id="iniciativa-pericia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('iniciativa-pericia')">-</button>
+            <button class="btn-incr" onclick="increment('iniciativa-pericia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Intimidação</label>
+          <div class="input-group">
+            <input type="number" id="intimidacao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('intimidacao')">-</button>
+            <button class="btn-incr" onclick="increment('intimidacao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Intuição</label>
+          <div class="input-group">
+            <input type="number" id="intuicao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('intuicao')">-</button>
+            <button class="btn-incr" onclick="increment('intuicao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Investigação</label>
+          <div class="input-group">
+            <input type="number" id="investigacao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('investigacao')">-</button>
+            <button class="btn-incr" onclick="increment('investigacao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Luta</label>
+          <div class="input-group">
+            <input type="number" id="luta" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('luta')">-</button>
+            <button class="btn-incr" onclick="increment('luta')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Medicina</label>
+          <div class="input-group">
+            <input type="number" id="medicina" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('medicina')">-</button>
+            <button class="btn-incr" onclick="increment('medicina')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Ocultismo</label>
+          <div class="input-group">
+            <input type="number" id="ocultismo" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('ocultismo')">-</button>
+            <button class="btn-incr" onclick="increment('ocultismo')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Percepção</label>
+          <div class="input-group">
+            <input type="number" id="percepcao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('percepcao')">-</button>
+            <button class="btn-incr" onclick="increment('percepcao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Pilotagem</label>
+          <div class="input-group">
+            <input type="number" id="pilotagem" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('pilotagem')">-</button>
+            <button class="btn-incr" onclick="increment('pilotagem')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Pontaria</label>
+          <div class="input-group">
+            <input type="number" id="pontaria" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('pontaria')">-</button>
+            <button class="btn-incr" onclick="increment('pontaria')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Profissão</label>
+          <div class="input-group">
+            <input type="number" id="profissao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('profissao')">-</button>
+            <button class="btn-incr" onclick="increment('profissao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Reflexo</label>
+          <div class="input-group">
+            <input type="number" id="reflexo" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('reflexo')">-</button>
+            <button class="btn-incr" onclick="increment('reflexo')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Religião</label>
+          <div class="input-group">
+            <input type="number" id="religiao" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('religiao')">-</button>
+            <button class="btn-incr" onclick="increment('religiao')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Sobrevivência</label>
+          <div class="input-group">
+            <input type="number" id="sobrevivencia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('sobrevivencia')">-</button>
+            <button class="btn-incr" onclick="increment('sobrevivencia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Tática</label>
+          <div class="input-group">
+            <input type="number" id="tatica" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('tatica')">-</button>
+            <button class="btn-incr" onclick="increment('tatica')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Tecnologia</label>
+          <div class="input-group">
+            <input type="number" id="tecnologia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('tecnologia')">-</button>
+            <button class="btn-incr" onclick="increment('tecnologia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Vontade</label>
+          <div class="input-group">
+            <input type="number" id="vontade" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('vontade')">-</button>
+            <button class="btn-incr" onclick="increment('vontade')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Artes</label>
+          <div class="input-group">
+            <input type="number" id="artes-pericia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('artes-pericia')">-</button>
+            <button class="btn-incr" onclick="increment('artes-pericia')">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Campos Extras -->
+    <div class="section">
+      <h2>Campos Extras</h2>
+      <div class="grid-3">
+        <div class="campo">
+          <label>Defesa</label>
+          <div class="input-group">
+            <input type="number" id="defesa" class="input-small">
+            <button class="btn-decr" onclick="decrement('defesa')">-</button>
+            <button class="btn-incr" onclick="increment('defesa')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Deslocamento</label>
+          <div class="input-group">
+            <input type="number" id="deslocamento" class="input-small">
+            <button class="btn-decr" onclick="decrement('deslocamento')">-</button>
+            <button class="btn-incr" onclick="increment('deslocamento')">+</button>
+          </div>
+        </div>
+        <div class="campo">
+          <label>Iniciativa</label>
+          <div class="input-group">
+            <input type="number" id="iniciativa-extra" class="input-small">
+            <button class="btn-decr" onclick="decrement('iniciativa-extra')">-</button>
+            <button class="btn-incr" onclick="increment('iniciativa-extra')">+</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inventário -->
+    <div class="section">
+      <h2>Inventário</h2>
+      <div class="grid-2">
+        <!-- Bolso -->
+        <div>
+          <h3>Bolso</h3>
+          <div class="inventario-container" id="inventario-bolso">
+            <ul class="inventario-lista" id="lista-bolso"></ul>
+          </div>
+          <div class="btn-adicionar">
+            <button onclick="abrirModal('adicionar', 'bolso')">Adicionar Item no Bolso</button>
+          </div>
+        </div>
+        <!-- Estoque -->
+        <div>
+          <h3>Estoque</h3>
+          <div class="inventario-container" id="inventario-estoque">
+            <ul class="inventario-lista" id="lista-estoque"></ul>
+          </div>
+          <div class="btn-adicionar">
+            <button onclick="abrirModal('adicionar', 'estoque')">Adicionar Item no Estoque</button>
+          </div>
+        </div>
+      </div>
+      <!-- Capacidade de Carga -->
+      <div class="inventario-capacidade">
+        <div class="campo-inline">
+          <label for="carga-maxima">Carga Máxima</label>
+          <div class="input-group">
+            <input type="number" id="carga-maxima" class="input-small" min="0" value="100">
+            <button class="btn-decr" onclick="decrement('carga-maxima')">-</button>
+            <button class="btn-incr" onclick="increment('carga-maxima')">+</button>
+          </div>
+        </div>
+        <div class="campo-inline">
+          <label>Carga Atual:</label>
+          <span id="carga-atual" class="carga-atual-box">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Habilidades, Artes e Anotações -->
+    <div class="section">
+      <h2>Habilidades</h2>
+      <textarea id="habilidades" rows="5"></textarea>
+    </div>
+    <div class="section">
+      <h2>Artes</h2>
+      <textarea id="artes" rows="5"></textarea>
+    </div>
+    <div class="section">
+      <h2>Anotações</h2>
+      <textarea id="anotacoes" rows="5"></textarea>
+    </div>
+
+    <!-- Botões de Ação -->
+    <div class="buttons">
+      <button onclick="salvarFicha()">Salvar Ficha</button>
+      <button onclick="carregarFicha()">Carregar Ficha</button>
+      <button onclick="window.print()">Imprimir Ficha</button>
+    </div>
+  </div>
+
+  <!-- Modal Inline para Adicionar/Visualizar Item -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <h3 id="modal-titulo"></h3>
+      <div id="modal-conteudo"></div>
+      <div class="modal-buttons" id="modal-botoes"></div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    // Atualiza as barras de status com base nos inputs de status
+    function updateStatusBar(tipo) {
+      const atual = parseInt(document.getElementById(tipo + "-atual").value) || 0;
+      const max = parseInt(document.getElementById(tipo + "-max").value) || 0;
+      const safeMax = max > 0 ? max : 1;
+      const perc = Math.max(0, Math.min(100, (atual / safeMax) * 100));
+      document.getElementById("barra-" + tipo).style.width = perc + "%";
+      document.getElementById("barra-" + tipo).setAttribute("data-valor", atual + "/" + max);
+    }
+    // Adiciona eventos aos inputs de status
+    ["pv", "pe", "sa"].forEach(tipo => {
+      document.getElementById(tipo + "-atual").addEventListener("input", () => updateStatusBar(tipo));
+      document.getElementById(tipo + "-max").addEventListener("input", () => updateStatusBar(tipo));
+    });
+
+    // Funções para incrementar e decrementar valores
+    function increment(id) {
+      const input = document.getElementById(id);
+      input.value = (parseInt(input.value) || 0) + 1;
+      input.dispatchEvent(new Event("input"));
+    }
+    function decrement(id) {
+      const input = document.getElementById(id);
+      input.value = Math.max(0, (parseInt(input.value) || 0) - 1);
+      input.dispatchEvent(new Event("input"));
+    }
+
+    // Função para preview da foto utilizando Data URL
+    function previewFoto(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const img = document.getElementById('foto-personagem');
+          img.src = e.target.result;
+          img.style.display = "block";
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // Variáveis para o inventário
+    let inventarioBolso = [];
+    let inventarioEstoque = [];
+    // Atualiza a exibição do inventário e a carga atual (soma somente do Bolso)
+    function renderInventario() {
+      const listaBolso = document.getElementById("lista-bolso");
+      const listaEstoque = document.getElementById("lista-estoque");
+      listaBolso.innerHTML = "";
+      listaEstoque.innerHTML = "";
+      let cargaTotal = 0;
+      inventarioBolso.forEach((item, index) => {
+        cargaTotal += Number(item.carga);
+        const li = document.createElement("li");
+        li.className = "inventario-item";
+        li.textContent = item.nome;
+        li.onclick = () => abrirModal("visualizar", "bolso", index);
+        // Botão para transferir para Estoque
+        const btnTransfer = document.createElement("button");
+        btnTransfer.className = "transfer-btn";
+        btnTransfer.textContent = "→";
+        btnTransfer.onclick = (e) => {
+          e.stopPropagation();
+          transferirItem("bolso", index);
+        };
+        // Botão para remover item
+        const btnRemover = document.createElement("button");
+        btnRemover.className = "remover-btn";
+        btnRemover.textContent = "X";
+        btnRemover.onclick = (e) => {
+          e.stopPropagation();
+          removerItem("bolso", index);
+        };
+        li.appendChild(btnRemover);
+        li.appendChild(btnTransfer);
+        listaBolso.appendChild(li);
+      });
+      inventarioEstoque.forEach((item, index) => {
+        const li = document.createElement("li");
+        li.className = "inventario-item";
+        li.textContent = item.nome;
+        li.onclick = () => abrirModal("visualizar", "estoque", index);
+        // Botão para transferir para Bolso
+        const btnTransfer = document.createElement("button");
+        btnTransfer.className = "transfer-btn";
+        btnTransfer.textContent = "←";
+        btnTransfer.onclick = (e) => {
+          e.stopPropagation();
+          transferirItem("estoque", index);
+        };
+        // Botão para remover item
+        const btnRemover = document.createElement("button");
+        btnRemover.className = "remover-btn";
+        btnRemover.textContent = "X";
+        btnRemover.onclick = (e) => {
+          e.stopPropagation();
+          removerItem("estoque", index);
+        };
+        li.appendChild(btnRemover);
+        li.appendChild(btnTransfer);
+        listaEstoque.appendChild(li);
+      });
+      document.getElementById("carga-atual").textContent = cargaTotal;
+    }
+    // Transfere item entre Bolso e Estoque
+    function transferirItem(origem, index) {
+      if (origem === "bolso") {
+        const item = inventarioBolso.splice(index, 1)[0];
+        inventarioEstoque.push(item);
+      } else {
+        const item = inventarioEstoque.splice(index, 1)[0];
+        inventarioBolso.push(item);
+      }
+      renderInventario();
+    }
+    // Remove item do inventário
+    function removerItem(local, index) {
+      if (local === "bolso") {
+        inventarioBolso.splice(index, 1);
+      } else {
+        inventarioEstoque.splice(index, 1);
+      }
+      renderInventario();
+    }
+    // Modal Inline: Abre a janela para adicionar ou visualizar item
+    function abrirModal(tipo, local, index = null) {
+      const overlay = document.getElementById("modal-overlay");
+      const titulo = document.getElementById("modal-titulo");
+      const conteudo = document.getElementById("modal-conteudo");
+      const botoes = document.getElementById("modal-botoes");
+      conteudo.innerHTML = "";
+      botoes.innerHTML = "";
+      overlay.style.display = "flex";
+      
+      if (tipo === "adicionar") {
+        titulo.textContent = "Adicionar Item (" + local.toUpperCase() + ")";
+        // Formulário para adicionar item
+        const inputNome = document.createElement("input");
+        inputNome.placeholder = "Nome do Item";
+        inputNome.style.marginBottom = "0.5rem";
+        const inputDesc = document.createElement("textarea");
+        inputDesc.placeholder = "Descrição do Item";
+        inputDesc.rows = 3;
+        inputDesc.style.marginBottom = "0.5rem";
+        const inputCarga = document.createElement("input");
+        inputCarga.type = "number";
+        inputCarga.placeholder = "Carga do Item";
+        inputCarga.style.marginBottom = "0.5rem";
+        conteudo.appendChild(inputNome);
+        conteudo.appendChild(inputDesc);
+        conteudo.appendChild(inputCarga);
+        // Botões
+        const btnConfirmar = document.createElement("button");
+        btnConfirmar.textContent = "Adicionar";
+        btnConfirmar.className = "btn-confirmar";
+        btnConfirmar.onclick = () => {
+          const novoItem = {
+            nome: inputNome.value || "Item Sem Nome",
+            descricao: inputDesc.value || "",
+            carga: Number(inputCarga.value) || 0
+          };
+          if (local === "bolso") {
+            inventarioBolso.push(novoItem);
+          } else {
+            inventarioEstoque.push(novoItem);
+          }
+          fecharModal();
+          renderInventario();
+        };
+        const btnCancelar = document.createElement("button");
+        btnCancelar.textContent = "Cancelar";
+        btnCancelar.className = "btn-cancelar";
+        btnCancelar.onclick = fecharModal;
+        botoes.appendChild(btnCancelar);
+        botoes.appendChild(btnConfirmar);
+      } else if (tipo === "visualizar") {
+        let item;
+        if (local === "bolso") {
+          item = inventarioBolso[index];
+        } else {
+          item = inventarioEstoque[index];
+        }
+        titulo.textContent = item.nome;
+        const pDesc = document.createElement("p");
+        pDesc.textContent = "Descrição: " + item.descricao;
+        const pCarga = document.createElement("p");
+        pCarga.textContent = "Carga: " + item.carga;
+        conteudo.appendChild(pDesc);
+        conteudo.appendChild(pCarga);
+        // Botão para fechar o modal
+        const btnFechar = document.createElement("button");
+        btnFechar.textContent = "Fechar";
+        btnFechar.className = "btn-cancelar";
+        btnFechar.onclick = fecharModal;
+        botoes.appendChild(btnFechar);
+      }
+    }
+    function fecharModal() {
+      document.getElementById("modal-overlay").style.display = "none";
+    }
+
+    // Funções de salvar e carregar ficha
+    function salvarFicha() {
+      const ficha = {
+        nome: document.getElementById("nome").value,
+        origem: document.getElementById("origem").value,
+        classe: document.getElementById("classe").value,
+        nivel: document.getElementById("nivel").value,
+        pc: document.getElementById("pc").value,
+        pv: document.getElementById("pv-atual").value + "/" + document.getElementById("pv-max").value,
+        pe: document.getElementById("pe-atual").value + "/" + document.getElementById("pe-max").value,
+        sa: document.getElementById("sa-atual").value + "/" + document.getElementById("sa-max").value,
+        forca: document.getElementById("forca").value,
+        destreza: document.getElementById("destreza").value,
+        constituicao: document.getElementById("constituicao").value,
+        inteligencia: document.getElementById("inteligencia").value,
+        sabedoria: document.getElementById("sabedoria").value,
+        carisma: document.getElementById("carisma").value,
+        acrobacia: document.getElementById("acrobacia").value,
+        adestramento: document.getElementById("adestramento").value,
+        atletismo: document.getElementById("atletismo").value,
+        atualidades: document.getElementById("atualidades").value,
+        ciencias: document.getElementById("ciencias").value,
+        crime: document.getElementById("crime").value,
+        diplomacia: document.getElementById("diplomacia").value,
+        enganacao: document.getElementById("enganacao").value,
+        fortitude: document.getElementById("fortitude").value,
+        furtividade: document.getElementById("furtividade").value,
+        iniciativa_pericia: document.getElementById("iniciativa-pericia").value,
+        intimidacao: document.getElementById("intimidacao").value,
+        intuicao: document.getElementById("intuicao").value,
+        investigacao: document.getElementById("investigacao").value,
+        luta: document.getElementById("luta").value,
+        medicina: document.getElementById("medicina").value,
+        ocultismo: document.getElementById("ocultismo").value,
+        percepcao: document.getElementById("percepcao").value,
+        pilotagem: document.getElementById("pilotagem").value,
+        pontaria: document.getElementById("pontaria").value,
+        profissao: document.getElementById("profissao").value,
+        reflexo: document.getElementById("reflexo").value,
+        religiao: document.getElementById("religiao").value,
+        sobrevivencia: document.getElementById("sobrevivencia").value,
+        tatica: document.getElementById("tatica").value,
+        tecnologia: document.getElementById("tecnologia").value,
+        vontade: document.getElementById("vontade").value,
+        defesa: document.getElementById("defesa").value,
+        deslocamento: document.getElementById("deslocamento").value,
+        iniciativa_extra: document.getElementById("iniciativa-extra").value,
+        inventarioBolso: inventarioBolso,
+        inventarioEstoque: inventarioEstoque,
+        cargaMaxima: document.getElementById("carga-maxima").value,
+        habilidades: document.getElementById("habilidades").value,
+        artes: document.getElementById("artes").value,
+        anotacoes: document.getElementById("anotacoes").value,
+        foto: document.getElementById("foto-personagem").src,
+        logo: document.getElementById("logo").src
+      };
+      const blob = new Blob([JSON.stringify(ficha)], { type: "application/json" });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = (ficha.nome || "ficha") + ".json";
+      link.click();
+      localStorage.setItem("ultimaFicha", JSON.stringify(ficha));
+    }
+    function carregarFicha() {
+      const input = document.createElement("input");
+      input.type = "file";
+      input.accept = "application/json";
+      input.onchange = e => {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          try {
+            const ficha = JSON.parse(event.target.result);
+            document.getElementById("nome").value = ficha.nome || "";
+            document.getElementById("origem").value = ficha.origem || "";
+            document.getElementById("classe").value = ficha.classe || "";
+            document.getElementById("nivel").value = ficha.nivel || "";
+            document.getElementById("pc").value = ficha.pc || "";
+            const pvSplit = ficha.pv.split("/");
+            document.getElementById("pv-atual").value = pvSplit[0];
+            document.getElementById("pv-max").value = pvSplit[1];
+            updateStatusBar("pv");
+            const peSplit = ficha.pe.split("/");
+            document.getElementById("pe-atual").value = peSplit[0];
+            document.getElementById("pe-max").value = peSplit[1];
+            updateStatusBar("pe");
+            const saSplit = ficha.sa.split("/");
+            document.getElementById("sa-atual").value = saSplit[0];
+            document.getElementById("sa-max").value = saSplit[1];
+            updateStatusBar("sa");
+            document.getElementById("forca").value = ficha.forca || "";
+            document.getElementById("destreza").value = ficha.destreza || "";
+            document.getElementById("constituicao").value = ficha.constituicao || "";
+            document.getElementById("inteligencia").value = ficha.inteligencia || "";
+            document.getElementById("sabedoria").value = ficha.sabedoria || "";
+            document.getElementById("carisma").value = ficha.carisma || "";
+            document.getElementById("acrobacia").value = ficha.acrobacia || "";
+            document.getElementById("adestramento").value = ficha.adestramento || "";
+            document.getElementById("atletismo").value = ficha.atletismo || "";
+            document.getElementById("atualidades").value = ficha.atualidades || "";
+            document.getElementById("ciencias").value = ficha.ciencias || "";
+            document.getElementById("crime").value = ficha.crime || "";
+            document.getElementById("diplomacia").value = ficha.diplomacia || "";
+            document.getElementById("enganacao").value = ficha.enganacao || "";
+            document.getElementById("fortitude").value = ficha.fortitude || "";
+            document.getElementById("furtividade").value = ficha.furtividade || "";
+            document.getElementById("iniciativa-pericia").value = ficha.iniciativa_pericia || "";
+            document.getElementById("intimidacao").value = ficha.intimidacao || "";
+            document.getElementById("intuicao").value = ficha.intuicao || "";
+            document.getElementById("investigacao").value = ficha.investigacao || "";
+            document.getElementById("luta").value = ficha.luta || "";
+            document.getElementById("medicina").value = ficha.medicina || "";
+            document.getElementById("ocultismo").value = ficha.ocultismo || "";
+            document.getElementById("percepcao").value = ficha.percepcao || "";
+            document.getElementById("pilotagem").value = ficha.pilotagem || "";
+            document.getElementById("pontaria").value = ficha.pontaria || "";
+            document.getElementById("profissao").value = ficha.profissao || "";
+            document.getElementById("reflexo").value = ficha.reflexo || "";
+            document.getElementById("religiao").value = ficha.religiao || "";
+            document.getElementById("sobrevivencia").value = ficha.sobrevivencia || "";
+            document.getElementById("tatica").value = ficha.tatica || "";
+            document.getElementById("tecnologia").value = ficha.tecnologia || "";
+            document.getElementById("vontade").value = ficha.vontade || "";
+            document.getElementById("defesa").value = ficha.defesa || "";
+            document.getElementById("deslocamento").value = ficha.deslocamento || "";
+            document.getElementById("iniciativa-extra").value = ficha.iniciativa_extra || "";
+            inventarioBolso = ficha.inventarioBolso || [];
+            inventarioEstoque = ficha.inventarioEstoque || [];
+            document.getElementById("carga-maxima").value = ficha.cargaMaxima || 100;
+            document.getElementById("habilidades").value = ficha.habilidades || "";
+            document.getElementById("artes").value = ficha.artes || "";
+            document.getElementById("anotacoes").value = ficha.anotacoes || "";
+            if(ficha.foto && !ficha.foto.startsWith("blob:")) {
+              document.getElementById("foto-personagem").src = ficha.foto;
+              document.getElementById("foto-personagem").style.display = "block";
+            }
+            if(ficha.logo && !ficha.logo.startsWith("blob:")) {
+              document.getElementById("logo").src = ficha.logo;
+            }
+            renderInventario();
+            localStorage.setItem("ultimaFicha", JSON.stringify(ficha));
+          } catch (err) {
+            Swal.fire({
+              icon: 'error',
+              title: 'Erro ao carregar ficha',
+              text: 'O arquivo selecionado não é válido ou está corrompido.'
+            });
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+    // Função para atualizar as barras de status com base nos inputs
+    function updateStatusBar(tipo) {
+      const atual = parseInt(document.getElementById(tipo + "-atual").value) || 0;
+      const max = parseInt(document.getElementById(tipo + "-max").value) || 0;
+      const safeMax = max > 0 ? max : 1;
+      const perc = Math.max(0, Math.min(100, (atual / safeMax) * 100));
+      document.getElementById("barra-" + tipo).style.width = perc + "%";
+      document.getElementById("barra-" + tipo).setAttribute("data-valor", atual + "/" + max);
+    }
+    window.addEventListener("beforeunload", () => {
+      salvarFicha();
+    });
+    window.addEventListener("load", () => {
+      if (localStorage.getItem("ultimaFicha")) {
+        const ficha = JSON.parse(localStorage.getItem("ultimaFicha"));
+        document.getElementById("nome").value = ficha.nome || "";
+        document.getElementById("origem").value = ficha.origem || "";
+        document.getElementById("classe").value = ficha.classe || "";
+        document.getElementById("nivel").value = ficha.nivel || "";
+        document.getElementById("pc").value = ficha.pc || "";
+        const pvSplit = ficha.pv.split("/");
+        document.getElementById("pv-atual").value = pvSplit[0];
+        document.getElementById("pv-max").value = pvSplit[1];
+        updateStatusBar("pv");
+        const peSplit = ficha.pe.dividido("/");
+        documento.getElementById("pe-atual").valor = peSplit[0];
+        documento.getElementById("pe-máx").valor = peSplit[1];
+        atualizarStatusBar("pe");
+        const saSplit = ficha.sa.dividido("/");
+        documento.getElementById("sa-atual").valor = saSplit[0];
+        documento.getElementById("sa-max").valor = saSplit[1];
+        atualizarStatusBar("sa");
+        documento.getElementById("forca").valor = ficha.forca || "";
+        documento.getElementById("destreza").valor = ficha.destreza || "";
+        documento.getElementById("constituico").valor = ficha.constitucional || "";
+        documento.getElementById("inteligência").valor = ficha.intelecgência || "";
+        documento.getElementById("sabedoria").valor = ficha.sabedoria || "";
+        documento.getElementById("carisma").valor = ficha.carisma || "";
+        documento.getElementById("acrobacia").valor = ficha.acrobacia || "";
+        documento.getElementById("adestramento").valor = ficha.adestramento || "";
+        documento.getElementById("atletismo").valor = ficha.atletismo || "";
+        documento.getElementById("atualidades").valor = ficha.atualidades || "";
+        documento.getElementById("ciências").valor = ficha.ciencias || "";
+        documento.getElementById("crime").valor = ficha.crime || "";
+        documento.getElementById("diplomacia").valor = ficha.diplomacia || "";
+        documento.getElementById("enganacão").valor = ficha.enganacao || "";
+        documento.getElementById("fortitude").valor = ficha.fortaleza || "";
+        documento.getElementById("furtividade").valor = ficha.furtividade || "";
+        documento.getElementById("iniciativa-perícia").valor = ficha.iniciativa_pericia || "";
+        documento.getElementById("intimidacão").valor = ficha.intimidacão || "";
+        documento.getElementById("intuicao").valor = ficha.intuitivo || "";
+        documento.getElementById("investigacao").valor = ficha.investigação || "";
+        documento.getElementById("luta").valor = ficha.luta || "";
+        documento.getElementById("medicina").valor = ficha.medicina || "";
+        documento.getElementById("ocultismo").valor = ficha.ocultismo || "";
+        documento.getElementById("percepcão").valor = ficha.percepcão || "";
+        documento.getElementById("pilotagem").valor = ficha.pilotagem || "";
+        documento.getElementById("pontaria").valor = ficha.pontaria || "";
+        documento.getElementById("profissao").valor = ficha.profissao || "";
+        documento.getElementById("reflexo").valor = ficha.reflexo || "";
+        documento.getElementById("religião").valor = ficha.religião || "";
+        documento.getElementById("sobrevivência").valor = ficha.sobrevivência || "";
+        documento.getElementById("tática").valor = ficha.tática || "";
+        documento.getElementById("tecnologia").valor = ficha.tecnologia || "";
+        documento.getElementById("vontade").valor = ficha.vontade || "";
+        documento.getElementById("defesa").valor = ficha.defesa || "";
+        documento.getElementById("deslocamento").valor = ficha.deslocamento || "";
+        documento.getElementById("iniciativa-extra").valor = ficha.iniciativa_extra || "";
+        inventarioBolso = ficha.inventarioBolso || [];
+        inventárioEstoque = ficha.inventárioEstoque || [];
+        documento.getElementById("carga-máxima").valor = ficha.cargaMaxima || 100;
+        documento.getElementById("habilidades").valor = ficha.habilidades || "";
+        documento.getElementById("artes").valor = ficha.artes || "";
+        documento.getElementById("anotacos").valor = ficha.anotacos || "";
+        se(ficha.foto && &!ficha.foto.começa com("blob:")) {
+          documento.getElementById("foto-personagem").src = ficha.foto;
+          documento.getElementById("foto-personagem").estilo.exibição = "bloco";
+        }
+        se(ficha.logotipo && &!ficha.logotipo.começa com("blob:")) {
+          documento.getElementById("logotipo").src = ficha.logotipo;
+        }
+        renderizarInventário();
+        localStorage.definir item("ultimaFicha", JSON.rigor(ficha));
+      }
+    });
+  </roteiro>
+</corpo>
+</html>
