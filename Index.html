@@ -477,6 +477,14 @@
           </div>
         </div>
         <div class="campo">
+          <label>Artes</label>
+          <div class="input-group">
+            <input type="number" id="artes-pericia" class="pericia-input input-small" min="0" max="99">
+            <button class="btn-decr" onclick="decrement('artes-pericia')">-</button>
+            <button class="btn-incr" onclick="increment('artes-pericia')">+</button>
+          </div>
+        </div>
+        <div class="campo">
           <label>Atletismo</label>
           <div class="input-group">
             <input type="number" id="atletismo" class="pericia-input input-small" min="0" max="99">
@@ -675,15 +683,7 @@
             <button class="btn-decr" onclick="decrement('vontade')">-</button>
             <button class="btn-incr" onclick="increment('vontade')">+</button>
           </div>
-        </div>
-        <div class="campo">
-          <label>Artes</label>
-          <div class="input-group">
-            <input type="number" id="artes-pericia" class="pericia-input input-small" min="0" max="99">
-            <button class="btn-decr" onclick="decrement('artes-pericia')">-</button>
-            <button class="btn-incr" onclick="increment('artes-pericia')">+</button>
-          </div>
-        </div>
+        </div>        
       </div>
     </div>
 
@@ -778,7 +778,6 @@
     <div class="buttons">
       <button onclick="salvarFicha()">Salvar Ficha</button>
       <button onclick="carregarFicha()">Carregar Ficha</button>
-      <button onclick="window.print()">Imprimir Ficha</button>
     </div>
   </div>
 
@@ -1181,7 +1180,7 @@
         atualizarStatusBar("sa");
         documento.getElementById("forca").valor = ficha.forca || "";
         documento.getElementById("destreza").valor = ficha.destreza || "";
-        documento.getElementById("constituico").valor = ficha.constitucional || "";
+        documento.getElementById("constituico").valor = ficha.constituico || "";
         documento.getElementById("inteligência").valor = ficha.intelecgência || "";
         documento.getElementById("sabedoria").valor = ficha.sabedoria || "";
         documento.getElementById("carisma").valor = ficha.carisma || "";
@@ -1197,7 +1196,7 @@
         documento.getElementById("furtividade").valor = ficha.furtividade || "";
         documento.getElementById("iniciativa-perícia").valor = ficha.iniciativa_pericia || "";
         documento.getElementById("intimidacão").valor = ficha.intimidacão || "";
-        documento.getElementById("intuicao").valor = ficha.intuitivo || "";
+        documento.getElementById("intuicao").valor = ficha.intuico || "";
         documento.getElementById("investigacao").valor = ficha.investigação || "";
         documento.getElementById("luta").valor = ficha.luta || "";
         documento.getElementById("medicina").valor = ficha.medicina || "";
@@ -1234,4 +1233,4 @@
     });
   </roteiro>
 </corpo>
-</html>
+    </html>
